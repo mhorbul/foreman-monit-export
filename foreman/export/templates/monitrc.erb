@@ -6,8 +6,10 @@ check process <%= app %>-<%= process.name %>-<%= num %> with pidfile <%= pid_fil
   group <%= app %>-<%= process.name %>
   start program "sh -c 'PORT=<%= port %> PID_FILE=<%= pid_file_for(process, num) %> LOG_FILE=<%= log_file_for(process, num) %> <%= wrapper_path_for(process) %> start'" as uid <%= user %>
   stop program "sh -c 'PID_FILE=<%= pid_file_for(process, num) %> <%= wrapper_path_for(process) %> stop'" as uid <%= user %>
-<% end -%>
 
+<% end -%>
 check file <%= File.basename(check_file_for(process)) %> with path <%= check_file_for(process) %>
   if changed timestamp then restart
+
+
 <% end -%>
