@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PID_FILE=${PID_FILE:-/var/run/<%= app %>/<%= process.name %>.pid}
-LOG_FILE=${LOG_FILE:-<%= log_root %>/<%= process.name %>.log}
+LOG_FILE=${LOG_FILE:-<%= log %>/<%= process.name %>.log}
 
 STATUS_RUNNING=0
 STATUS_DEAD_WITH_PID=1
