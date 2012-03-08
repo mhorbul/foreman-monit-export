@@ -6,9 +6,8 @@ module Foreman
 
       def initialize(location, engine, options={})
         super
-        @location = File.expand_path(@location)
         @pid = options[:pid]
-        @checkfile = options[:checkfile]
+        @check = options[:check]
       end
 
       def export
@@ -18,9 +17,10 @@ module Foreman
 
         @app ||= File.basename(engine.directory)
         @user ||= app
-        @log ||= "/var/log/#{app}"
-        @pid ||= "/var/run/#{app}"
-        @check ||= "/var/lock/subsys/#{app}"
+        @log = File.expand_path(@log || "/var/log/#{app}")
+        @pid = File.expand_path(@pid || "/var/run/#{app}")
+        @check = File.expand_path(@check || "/var/lock/subsys/#{app}")
+        @location = File.expand_path(@location)
 
         template_root = template
 
