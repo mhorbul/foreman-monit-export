@@ -1,0 +1,17 @@
+<% engine.procfile.entries.each do |process| -%>
+<% 1.upto(concurrency[process.name]) do |num| -%>
+<% port = engine.port_for(process, num, self.port) -%>
+<% proc_name = "#{process.name}-#{num}" -%>
+<% pid_file = File.join(pid_root, "#{proc_name}.pid") -%>
+<% log_file = File.join(log_root, "#{proc_name}.log") -%>
+check process <%= app %>-<%= proc_name %> with pidfile <%= pid_file %>
+  depends on <%= File.basename(checkfile) %>
+  group <%= app %>-<%= process.name %>
+  start program "PORT=<%= port %> PID_FILE=<%= pid_file %> LOG_FILE=<%= log_file %> <%= wrapper_path_for(process) %> start" as uid <%= user %>
+  stop program "PID_FILE=<%= pid_file %> <%= wrapper_path_for(process) %> stop" as uid <%= user %>
+<% end -%>
+<% end -%>
+
+check file <%= File.basename(checkfile) %> with path <%= checkfile %>
+  if changed timestamp then restart
+
