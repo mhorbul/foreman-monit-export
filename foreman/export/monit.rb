@@ -2,7 +2,7 @@ module Foreman
   module Export
     class Monit < Foreman::Export::Base
 
-      attr_reader :pid, :checkfile
+      attr_reader :pid, :check
 
       def initialize(location, engine, options={})
         super
@@ -18,12 +18,11 @@ module Foreman
 
         @app ||= File.basename(engine.directory)
         @user ||= app
+        @log ||= "/var/log/#{app}"
+        @pid ||= "/var/run/#{app}"
+        @check ||= "/var/lock/subsys/#{app}"
 
-        template_root = self.template
-        log_root = self.log || "/var/log/#{app}"
-        pid_root = self.pid || "/var/run/#{app}"
-
-        @checkfile ||= "/var/lock/subsys/#{app}.restart"
+        template_root = template
 
         engine.procfile.entries.each do |process|
           wrapper_template = export_template("monit", "wrapper.sh.erb", template_root)
@@ -41,6 +40,17 @@ module Foreman
         File.join(location, "#{app}-#{process.name}.sh")
       end
 
+      def pid_file_for(process, num)
+        File.join(pid, "#{process.name}-#{num}.pid")
+      end
+
+      def log_file_for(process, num)
+        File.join(log, "#{process.name}-#{num}.log")
+      end
+
+      def check_file_for(process)
+        File.join(check, "#{process.name}.restart")
+      end
     end
   end
 end
