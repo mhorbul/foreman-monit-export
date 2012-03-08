@@ -5,5 +5,5 @@ monit could start and stop them.
 * Usage
 
   #+BEGIN_SRC: sh
-  foreman export monit ./
+  foreman export monit ./ -t `pwd`/foreman/export/templates
   #+END_SRC
